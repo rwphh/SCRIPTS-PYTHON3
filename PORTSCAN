@@ -1,0 +1,14 @@
+# MODO DE USO: sys.argv[1] 192.168.0.10
+# MODO DE USO: sys.argv[1] site.com
+
+#!/usr/bin/python3
+
+
+import socket,sys
+
+for porta in range(1,65535): # Altere o range de portas a sua necessidade.
+        mymsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if mymsocket.connect_ex((sys.argv[1],porta)) == 0:
+                print("Porta",porta,"[ABERTA]")
+                mymsocket.close()
+
